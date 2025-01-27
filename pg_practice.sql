@@ -3,19 +3,22 @@ CREATE DATABASE practice;
 
 
 -- 問題2. postgresqlでpracticeデータベースのusersテーブルを生成するSQL文を記述してください。
+CREATE TYPE gender as ENUM('Man','Woman','Other');
+
 CREATE TABLE users (
   id SERIAL NOT NULL ,
-  name CHARACTER(255) NOT NULL DEFAULT COMMENT'氏名',
-  age INTEGER NOT NULL DEFAULT (0, '年齢'),
-  gender ENUM('Man','Woman','Other') NOT NULL DEFAULT('Other','性別'),
+  name VARCHAR(255) NOT NULL default '',
+  age INTEGER NOT NULL DEFAULT 0,
+  gender gender NOT NULL DEFAULT('Other'),
   PRIMARY KEY (id));
 
 
 -- 問題3. postgresqlでpracticeデータベースのjobsテーブルを生成するSQL文を記述してください。
-CREATE TABLE jobs (
-  id SERIAL NOT NULL,
-  user_id INTEGER NOT NULL,
-  name CHARACTER(255) NOT NULL DEFAULT ('会社員','仕事名'),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY `fk_user_id` (`user_id`) REFERENCES `users`(`id`)
-) ;
+CREATE TABLE jobs(
+    id SERIAL NOT NULL,
+    user_id INTEGER NOT NULL,
+    name CHARACTER(255) NOT NULL DEFAULT '会社員',
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+)
+;
