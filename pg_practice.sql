@@ -20,5 +20,4 @@ CREATE TABLE jobs(
     name CHARACTER(255) NOT NULL DEFAULT '会社員',
     PRIMARY KEY(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
-)
-;
+);
