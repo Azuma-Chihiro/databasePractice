@@ -13,9 +13,7 @@ SELECT
 FROM
     countries
 WHERE
-    code IN ('ALB','AND','AUT','','ESP','FRA','GBR','GGY',
-    'GIB','GRC','IMN','IRL','ITA','JEY','LIE','LUX','MCO','NLD','PRT',
-    'SMR','VAT')
+    continent IN ('Europe')
 ;
 
 -- 問3
@@ -25,9 +23,7 @@ SELECT
 FROM
     countries
 WHERE
-    code NOT IN ('ALB','AND','AUT','','ESP','FRA','GBR','GGY',
-    'GIB','GRC','IMN','IRL','ITA','JEY','LIE','LUX','MCO','NLD','PRT',
-    'SMR','VAT')
+    continent NOT IN ('Europe')
 ;
 
 -- 問4
@@ -70,7 +66,7 @@ SELECT * FROM countries WHERE indep_year IS NOT NULL;
 
 -- 問9
 -- 名前の末尾が「ia」で終わる国を抽出してください。
-SELECT * FROM countries WHERE name LIKE '_ia';
+SELECT * FROM countries WHERE name LIKE '%ia';
 
 -- 問10
 -- 名前の中に「st」が含まれる国を抽出してください。
@@ -78,7 +74,7 @@ SELECT * FROM countries WHERE name LIKE '%st%';
 
 -- 問11
 -- 名前が「an」で始まる国を抽出してください。
-SELECT * FROM countries WHERE name LIKE 'an_';
+SELECT * FROM countries WHERE name LIKE 'an%';
 
 -- 問12
 -- 全国の中から独立記念日が1990年より前または人口が10万人より多い国を全て抽出してください。
@@ -158,13 +154,13 @@ ORDER BY population DESC ,life_expectancy DESC;
 -- アジア大陸の中で最小の表面積を表示してください
 SELECT MIN(surface_area)
 FROM countries
-WHERE countries = 'Asia';
+WHERE continent = 'Asia';
 
 -- 問24
 -- アジア大陸の表面積の合計を表示してください。
 SELECT SUM(surface_area)
 FROM countries
-WHERE countries ='Asia';
+WHERE continent ='Asia';
 
 -- 問25
 -- 全ての国と言語を表示してください。一つの国に複数言語があると思いますので同じ国名を言語数だけ出力してください。
@@ -189,14 +185,15 @@ ON countries.name = celebrities.name;
 -- 全ての有名人の名前,国名、第一言語を出力してください。
 SELECT celebrities.name, countries.name, country_languages.language
 FROM countries
+JOIN countries
+ON (country_code = countries.code)
 JOIN country_languages
-ON countries.name = country_languages.language
-ON countries.name = celebrities.name;
+ON (countries.country_code = country_languages.country_code);
 
 -- 問29
 -- 全ての有名人の名前と国名をに出力してください。 ただしテーブル結合せずサブクエリを使用してください。
-SELECT name,name FROM countries
-WHERE EXISTS
+SELECT name FROM countries
+WHERE name IN
     (
         SELECT
             name
@@ -226,27 +223,24 @@ where
 -- 問31
 -- 1991年生まれと、1981年生まれの有名人が何人いるか調べてください。ただし、日付関数は使用せず、UNION句を使用してください。
 SELECT
-    COUNT(age)
+    COUNT(*)
 FROM
-    celebrities c 
+    celebrities  
 WHERE
-    age < 1991
+    age < (2023 - 1991)
 UNION
 SELECT
-    age
+    COUNT()
 FROM
     celebrities
 WHERE
-     age > 1981
+     age > (2023 - 1981)
 ;
 
 -- 問32
 -- 有名人の出身国の平均年齢を高い方から順に表示してください。ただし、FROM句はcountriesテーブルとしてください。
-SELECT countries.name,celebrities.age
+SELECT countries.name, AVG(celebrities.age) AS average_age
 FROM countries
-LEFT OUTER JOIN
-    celebrities
-ON
-    countries.name = celebrities.age
-ORDER BY
-    AVG(age) DESC;
+JOIN celebrities ON (countries.capital = celebrities.id)
+GROUP BY countries.name
+ORDER BY average_age DESC;
