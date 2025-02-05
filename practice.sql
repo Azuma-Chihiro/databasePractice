@@ -79,14 +79,14 @@ SELECT * FROM countries WHERE name LIKE 'an%';
 -- 問12
 -- 全国の中から独立記念日が1990年より前または人口が10万人より多い国を全て抽出してください。
 SELECT * FROM countries 
-WHERE indep_year >= 1900 
+WHERE indep_year <= 1900 
 OR population >=100000;
 
 -- 問13
 -- コードがDZAもしくはALBかつ独立記念日が1990年より前の国を全て抽出してください。
 SELECT * FROM countries 
-WHERE code = 'DZA' OR 'ALB'
-AND indep_year >= 1900;
+WHERE code = 'DZA' OR code = 'ALB'
+AND indep_year <= 1900;
 
 -- 問14
 -- 全ての地方をグループ化せずに表示してください。
@@ -147,8 +147,8 @@ SELECT
         MAX(life_expectancy) ,
         MAX(population)
 FROM countries
-GROUP BY region, population, life_expectancy
-ORDER BY population DESC ,life_expectancy DESC;
+GROUP BY region;/*, population, life_expectancy
+ORDER BY population DESC ,life_expectancy DESC;*/
 
 -- 問23
 -- アジア大陸の中で最小の表面積を表示してください
@@ -174,8 +174,7 @@ FROM countries
 JOIN cities
 ON (countries.code = cities.country_code)
 JOIN country_languages
-ON (countries.code2 = country_languages.country_code)
-WHERE country_languages.is_officale =  country_languages.is_official 
+ON (countries.code = country_languages.country_code)
 ;
 
 -- 問27
@@ -188,22 +187,29 @@ ON countries.name = celebrities.name;
 -- 問28
 -- 全ての有名人の名前,国名、第一言語を出力してください。
 SELECT celebrities.name, countries.name, country_languages.language
-FROM countries
+FROM celebrities 
 JOIN countries
-ON (country_code = countries.code)
+ON (celebrities.country_code = countries.code)
 JOIN country_languages
-ON (countries.country_code = country_languages.country_code);
+ON (celebrities.country_code = country_languages.country_code)
+where country_languages.is_official = country_languages.is_official 
+;
 
 -- 問29
 -- 全ての有名人の名前と国名をに出力してください。 ただしテーブル結合せずサブクエリを使用してください。
-SELECT name, name FROM countries
-WHERE name IN
+SELECT countries.name AS name,
     (
         SELECT
             name
         FROM
             celebrities
-    )
+        WHERE name = countries.name
+    )AS name
+FROM countries
+WHERE name IN (
+    SELECT name 
+    FROM celebrities
+)
 ;
 
 -- 問30
