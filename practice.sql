@@ -169,10 +169,14 @@ FROM country_languages;
 
 -- 問26
 -- 全ての国と言語と市区町村を表示してください。
-SELECT countries.name, countries.region, country_languages.language
+SELECT countries.name, cities.name, country_languages.language
 FROM countries
+JOIN cities
+ON (countries.code = cities.country_code)
 JOIN country_languages
-ON countries.region = country_languages.language;
+ON (countries.code2 = country_languages.country_code)
+WHERE country_languages.is_officale =  country_languages.is_official 
+;
 
 -- 問27
 -- 全ての有名人を出力してください。左側外部結合を使用して国名なし（country_codeがNULL）も表示してください。
@@ -192,7 +196,7 @@ ON (countries.country_code = country_languages.country_code);
 
 -- 問29
 -- 全ての有名人の名前と国名をに出力してください。 ただしテーブル結合せずサブクエリを使用してください。
-SELECT name FROM countries
+SELECT name, name FROM countries
 WHERE name IN
     (
         SELECT
@@ -230,7 +234,7 @@ WHERE
     age < (2023 - 1991)
 UNION
 SELECT
-    COUNT()
+    COUNT(*)
 FROM
     celebrities
 WHERE
@@ -241,6 +245,6 @@ WHERE
 -- 有名人の出身国の平均年齢を高い方から順に表示してください。ただし、FROM句はcountriesテーブルとしてください。
 SELECT countries.name, AVG(celebrities.age) AS average_age
 FROM countries
-JOIN celebrities ON (countries.capital = celebrities.id)
+JOIN celebrities ON (countries.code = celebrities.country_code)
 GROUP BY countries.name
 ORDER BY average_age DESC;
