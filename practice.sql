@@ -147,8 +147,7 @@ SELECT
         MAX(life_expectancy) ,
         MAX(population)
 FROM countries
-GROUP BY region;/*, population, life_expectancy
-ORDER BY population DESC ,life_expectancy DESC;*/
+GROUP BY region;
 
 -- 問23
 -- アジア大陸の中で最小の表面積を表示してください
@@ -192,7 +191,7 @@ JOIN countries
 ON (celebrities.country_code = countries.code)
 JOIN country_languages
 ON (celebrities.country_code = country_languages.country_code)
-where country_languages.is_official = country_languages.is_official 
+where country_languages.is_official = country_languages.country_code
 ;
 
 -- 問29
@@ -202,14 +201,10 @@ SELECT countries.name AS name,
         SELECT
             name
         FROM
-            celebrities
+            countries
         WHERE name = countries.name
     )AS name
 FROM countries
-WHERE name IN (
-    SELECT name 
-    FROM celebrities
-)
 ;
 
 -- 問30
