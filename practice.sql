@@ -191,20 +191,20 @@ JOIN countries
 ON (celebrities.country_code = countries.code)
 JOIN country_languages
 ON (celebrities.country_code = country_languages.country_code)
-where country_languages.is_official = country_languages.country_code
+where country_languages.is_official = 'T'
 ;
 
 -- 問29
 -- 全ての有名人の名前と国名をに出力してください。 ただしテーブル結合せずサブクエリを使用してください。
-SELECT countries.name AS name,
+SELECT celebrities.name AS name,
     (
         SELECT
-            name
+            countries.name
         FROM
             countries
-        WHERE name = countries.name
-    )AS name
-FROM countries
+        WHERE countries.code = country_code
+    )AS country_name
+FROM celebrities
 ;
 
 -- 問30
